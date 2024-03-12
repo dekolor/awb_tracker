@@ -10,6 +10,25 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("Some info about AWB #" . $awb->awb_number) }}
+                    <ul class="max-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach($awb->steps as $awbstep)
+                            <li class="py-3 sm:pb-4">
+                                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            {{ $awbstep->status_long }}
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            {{ $awbstep->status_date }}
+                                        </p>
+                                    </div>
+{{--                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">--}}
+{{--                                        <a href="/awb/{{ $awb->awb_number }}" class="px-3 py-1 border border-blue-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Track</a>--}}
+{{--                                    </div>--}}
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
