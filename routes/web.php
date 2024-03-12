@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AwbController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,9 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AwbController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/awb/{awb:awb_number}', [AwbController::class, 'show'])->middleware(['auth', 'verified'])->name('awb.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
