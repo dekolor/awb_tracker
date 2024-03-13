@@ -22,9 +22,18 @@
                                             {{ $awbstep->status_date }}
                                         </p>
                                     </div>
-{{--                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">--}}
-{{--                                        <a href="/awb/{{ $awb->awb_number }}" class="px-3 py-1 border border-blue-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Track</a>--}}
-{{--                                    </div>--}}
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            {{ $awbstep->county }}
+                                            @empty(!$awbstep->country)
+                                                ({{ $awbstep->country }})
+                                            @endempty
+
+                                            @empty(!$awbstep->transit_location)
+                                                -> {{ $awbstep->transit_location }}
+                                            @endempty
+                                        </p>
+                                    </div>
                                 </div>
                             </li>
                         @endforeach
