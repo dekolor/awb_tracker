@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('awb_steps', function (Blueprint $table) {
             $table->id();
-            $table->string('awb_number');
+            $table->foreignId('awb_id')->constrained()->cascadeOnDelete();
             $table->string('county');
             $table->string('country');
             $table->string('status_long');

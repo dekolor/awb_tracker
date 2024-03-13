@@ -11,15 +11,18 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{--                    {{ __("You're logged in!") }}--}}
                     <ul class="max-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        @if(count($awbs)===0)
+                            <p>There is no package to track yet...</p>
+                        @endif
                         @foreach($awbs as $awb)
                             <li class="py-3 sm:pb-4">
                                 <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                            {{ $awb->awb_number }}
+                                            {{ $awb->awb_number }} ({{ $awb->tag }})
                                         </p>
                                         <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            {{ $awb->tag }}
+                                            {{ $awb->steps->min()->status_long ?? 'No status yet.' }}
                                         </p>
                                     </div>
                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">

@@ -22,17 +22,17 @@ class DatabaseSeeder extends Seeder
 
         Carrier::factory()->create([
            'name' => 'Sameday',
-           'logo' => 'https://sameday.ro/app/themes/samedaytwo/public/images/logo/sameday_logo_big_the_open_way_2x.webp'
+           'logo' => '/img/logo-sameday.webp'
         ]);
 
         Carrier::factory()->create([
             'name' => 'Fan Courier',
-            'logo' => 'https://www.fancourier.ro/wp-content/uploads/2023/03/logo.svg'
+            'logo' => '/img/logo-fan.svg'
         ]);
 
         Carrier::factory()->create([
             'name' => 'Cargus',
-            'logo' => 'https://www.cargus.ro/wp-content/uploads/CG_LOGO_OGB_RGB-1.svg'
+            'logo' => '/img/logo-cargus.svg'
         ]);
 
         // \App\Models\User::factory()->create([

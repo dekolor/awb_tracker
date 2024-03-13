@@ -18,7 +18,7 @@ class AwbStepFactory extends Factory
     public function definition(): array
     {
         return [
-            'awb_number' => Awb::factory(),
+            'awb_id' => Awb::factory(),
             'county' => 'Ilfov',
             'country' => 'Romania',
             'status_long' => fake()->paragraph,

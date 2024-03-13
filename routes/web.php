@@ -25,6 +25,8 @@ Route::get('/awb/show/{awb:awb_number}', [AwbController::class, 'show'])->middle
 Route::post('/awb/store' , [AwbController::class, 'store'])->middleware(['auth', 'verified'])->name('awb.store');
 Route::get('/awb/delete/{awb:awb_number}', [AwbController::class, 'delete'])->middleware(['auth', 'verified'])->name('awb.delete');
 
+Route::get('/check/{awb:awb_number}', [\App\Http\Controllers\AwbChecker::class, 'check'])->middleware(['auth', 'verified']);
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

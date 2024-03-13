@@ -11,7 +11,7 @@ class AwbController extends Controller
     public function index()
     {
         return view('dashboard', [
-            'awbs' => Awb::latest()->paginate(6)
+            'awbs' => Awb::with('carrier')->latest()->paginate(6)
         ]);
     }
 
@@ -31,11 +31,13 @@ class AwbController extends Controller
 
     public function store()
     {
-        Awb::create([
+        $awb = Awb::create([
             'awb_number' => request('awb_number'),
             'carrier_id' => request('carrier'),
             'tag' => request('tag')
         ]);
+
+        (new AwbChecker)->check($awb);
 
         return redirect('/')->with('success', 'AWB Added');
     }

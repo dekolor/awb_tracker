@@ -17,7 +17,7 @@ class Awb extends Model
 
     public function steps()
     {
-        return $this->hasMany(AwbStep::class, 'awb_number');
+        return $this->hasMany(AwbStep::class, 'awb_id');
     }
 
     public function carrier()
