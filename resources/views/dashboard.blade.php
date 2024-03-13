@@ -25,6 +25,7 @@
                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                         <img height="32" width="32" class="mx-5" src="{{ $awb->carrier->logo }}" />
                                         <a href="/awb/show/{{ $awb->awb_number }}" class="px-3 py-1 border border-blue-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Track</a>
+                                        <a href="/awb/delete/{{ $awb->awb_number }}" class="mx-3 px-3 py-1 border border-red-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Delete</a>
                                     </div>
                                 </div>
                             </li>

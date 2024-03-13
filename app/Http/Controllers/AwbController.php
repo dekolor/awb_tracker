@@ -39,4 +39,10 @@ class AwbController extends Controller
 
         return redirect('/')->with('success', 'AWB Added');
     }
+
+    public function delete(Awb $awb)
+    {
+        Awb::where('awb_number', $awb->awb_number)->delete();
+        return redirect('/')->with('success', 'AWB Deleted');
+    }
 }
