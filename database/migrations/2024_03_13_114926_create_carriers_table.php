@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('awbs', function (Blueprint $table) {
+        Schema::create('carriers', function (Blueprint $table) {
             $table->id();
-            $table->string('awb_number');
-            $table->string('carrier_id');
-            $table->string('tag');
+            $table->string('name');
+            $table->string('logo');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('awbs');
+        Schema::dropIfExists('carriers');
     }
 };

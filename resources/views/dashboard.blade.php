@@ -23,7 +23,8 @@
                                         </p>
                                     </div>
                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                        <a href="/awb/{{ $awb->awb_number }}" class="px-3 py-1 border border-blue-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Track</a>
+                                        <img height="32" width="32" class="mx-5" src="{{ $awb->carrier->logo }}" />
+                                        <a href="/awb/show/{{ $awb->awb_number }}" class="px-3 py-1 border border-blue-300 rounded-full text-blue-300 text-xs uppercase font-semibold">Track</a>
                                     </div>
                                 </div>
                             </li>

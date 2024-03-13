@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Awb>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Carrier>
  */
-class AwbFactory extends Factory
+class CarrierFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,9 +17,7 @@ class AwbFactory extends Factory
     public function definition(): array
     {
         return [
-            'awb_number' => 'AWB' . fake()->randomNumber(9, 1),
-            'carrier_id' => 1,
-            'tag' => fake()->slug
+            //
         ];
     }
 }

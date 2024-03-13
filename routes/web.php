@@ -20,7 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [AwbController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/awb/{awb:awb_number}', [AwbController::class, 'show'])->middleware(['auth', 'verified'])->name('awb.show');
+Route::get('/awb/create', [AwbController::class, 'create'])->middleware(['auth', 'verified'])->name('awb.create');
+Route::get('/awb/show/{awb:awb_number}', [AwbController::class, 'show'])->middleware(['auth', 'verified'])->name('awb.show');
+Route::post('/awb/store' , [AwbController::class, 'store'])->middleware(['auth', 'verified'])->name('awb.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
