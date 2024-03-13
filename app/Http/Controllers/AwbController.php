@@ -11,7 +11,7 @@ class AwbController extends Controller
     public function index()
     {
         return view('dashboard', [
-            'awbs' => Awb::latest()->get()
+            'awbs' => Awb::latest()->paginate(6)
         ]);
     }
 

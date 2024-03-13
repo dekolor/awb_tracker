@@ -30,6 +30,7 @@
                             </li>
                         @endforeach
                     </ul>
+                    {{ $awbs->links() }}
                 </div>
             </div>
         </div>
