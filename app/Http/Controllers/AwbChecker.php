@@ -56,18 +56,20 @@ class AwbChecker extends Controller
 
         $awbSteps = json_decode($response->body(), TRUE);
 
-        foreach($awbSteps['events'] as $awbStep) {
-            AwbStep::updateOrCreate([
-                'awb_id' => $awb->id,
-                'county' => $awbStep['location'],
-                'country' => '',
-                'status_long' => $awbStep['name'],
-                'status_code' => $awbStep['id'],
-                'status_short' => $awbStep['name'],
-                'status_state_code' => $awbStep['id'],
-                'transit_location' => '',
-                'status_date' => $awbStep['date']
-            ]);
+        if(!empty($awbStep)) {
+            foreach($awbSteps['events'] as $awbStep) {
+                AwbStep::updateOrCreate([
+                    'awb_id' => $awb->id,
+                    'county' => $awbStep['location'],
+                    'country' => '',
+                    'status_long' => $awbStep['name'],
+                    'status_code' => $awbStep['id'],
+                    'status_short' => $awbStep['name'],
+                    'status_state_code' => $awbStep['id'],
+                    'transit_location' => '',
+                    'status_date' => $awbStep['date']
+                ]);
+            }
         }
     }
 }
