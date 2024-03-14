@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("Some info about AWB #" . $awb->awb_number) }}
                     <ul class="max-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($awb->steps as $awbstep)
+                        @foreach($awb->steps->sortByDesc('status_date') as $awbstep)
                             <li class="py-3 sm:pb-4">
                                 <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                     <div class="flex-1 min-w-0">

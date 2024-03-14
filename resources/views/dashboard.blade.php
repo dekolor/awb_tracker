@@ -22,7 +22,7 @@
                                             {{ $awb->awb_number }} ({{ $awb->tag }})
                                         </p>
                                         <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            {{ $awb->steps->min()->status_long ?? 'No status yet.' }}
+                                            {{ $awb->steps->sortBy('status_date')->last()->status_long ?? 'No status yet.' }}
                                         </p>
                                     </div>
                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
