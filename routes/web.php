@@ -21,11 +21,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [AwbController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/awb/create', [AwbController::class, 'create'])->middleware(['auth', 'verified'])->name('awb.create');
-Route::get('/awb/show/{awb:awb_number}', [AwbController::class, 'show'])->middleware(['auth', 'verified'])->name('awb.show');
+Route::get('/awb/show/{awb}', [AwbController::class, 'show'])->middleware(['auth', 'verified'])->name('awb.show');
 Route::post('/awb/store' , [AwbController::class, 'store'])->middleware(['auth', 'verified'])->name('awb.store');
-Route::get('/awb/delete/{awb:awb_number}', [AwbController::class, 'delete'])->middleware(['auth', 'verified'])->name('awb.delete');
+Route::get('/awb/delete/{awb}', [AwbController::class, 'delete'])->middleware(['auth', 'verified'])->name('awb.delete');
 
-Route::get('/check/{awb:awb_number}', [\App\Http\Controllers\AwbChecker::class, 'check'])->middleware(['auth', 'verified']);
+Route::get('/check/{awb}', [\App\Http\Controllers\AwbChecker::class, 'check'])->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
