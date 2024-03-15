@@ -10,24 +10,30 @@ use Illuminate\Support\Facades\Http;
 
 class AwbChecker extends Controller
 {
-    public function check(Awb $awb)
+    public static function check(Awb $awb)
     {
         $statusCode = $awb->steps->sortBy('status_date')->last()->status_code;
         switch ($awb->carrier->id) {
             case 1:
+                // sameday carrier
+
+                // final status code for sameday is 9
                 if ($statusCode != "9") {
-                    echo 'checking awb for ' . $awb->tag;
+                    echo "checking awb for " . $awb->tag . "\n";
                     static::sameday($awb);
                 } else {
-                    echo 'package already delivered, skipping... (' . $awb->tag . ')<br/>';
+                    echo "package already delivered, skipping... (" . $awb->tag . ")\n";
                 }
                 break;
             case 2:
+                // fan courier carrier
+
+                // final status code for fan courier is S2
                 if ($statusCode != "S2") {
-                    echo 'checking awb for ' . $awb->tag;
+                    echo "checking awb for " . $awb->tag . "\n";
                     static::fancourier($awb);
                 } else {
-                    echo 'package already delivered, skipping... (' . $awb->tag . ')<br/>';
+                    echo "package already delivered, skipping... (" . $awb->tag . ")\n";
                 }
                 break;
             default:
@@ -35,7 +41,7 @@ class AwbChecker extends Controller
         }
     }
 
-    public function checkAll()
+    public static function checkAll()
     {
         $awbs = Awb::all();
 
