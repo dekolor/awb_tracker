@@ -56,7 +56,7 @@ class AwbChecker extends Controller
 
         $awbSteps = json_decode($response->body(), TRUE);
 
-        if(!empty($awbStep)) {
+        if(!empty($awbSteps)) {
             foreach($awbSteps['events'] as $awbStep) {
                 AwbStep::updateOrCreate([
                     'awb_id' => $awb->id,
