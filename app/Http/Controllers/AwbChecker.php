@@ -12,15 +12,35 @@ class AwbChecker extends Controller
 {
     public function check(Awb $awb)
     {
+        $statusCode = $awb->steps->sortBy('status_date')->last()->status_code;
         switch ($awb->carrier->id) {
             case 1:
-                static::sameday($awb);
+                if ($statusCode != "9") {
+                    echo 'checking awb for ' . $awb->tag;
+                    static::sameday($awb);
+                } else {
+                    echo 'package already delivered, skipping... (' . $awb->tag . ')<br/>';
+                }
                 break;
             case 2:
-                static::fancourier($awb);
+                if ($statusCode != "S2") {
+                    echo 'checking awb for ' . $awb->tag;
+                    static::fancourier($awb);
+                } else {
+                    echo 'package already delivered, skipping... (' . $awb->tag . ')<br/>';
+                }
                 break;
             default:
                 throw new ModelNotFoundException();
+        }
+    }
+
+    public function checkAll()
+    {
+        $awbs = Awb::all();
+
+        foreach ($awbs as $awb) {
+            static::check($awb);
         }
     }
 
@@ -32,7 +52,7 @@ class AwbChecker extends Controller
 
         $awbSteps = json_decode($response->body(), TRUE);
 
-        foreach($awbSteps['awbHistory'] as $awbStep) {
+        foreach ($awbSteps['awbHistory'] as $awbStep) {
             AwbStep::updateOrCreate([
                 'awb_id' => $awb->id,
                 'county' => $awbStep['county'],
@@ -56,8 +76,8 @@ class AwbChecker extends Controller
 
         $awbSteps = json_decode($response->body(), TRUE);
 
-        if(!empty($awbSteps)) {
-            foreach($awbSteps['events'] as $awbStep) {
+        if (!empty($awbSteps)) {
+            foreach ($awbSteps['events'] as $awbStep) {
                 AwbStep::updateOrCreate([
                     'awb_id' => $awb->id,
                     'county' => $awbStep['location'],
