@@ -12,7 +12,8 @@ class AwbChecker extends Controller
 {
     public static function check(Awb $awb)
     {
-        $statusCode = $awb->steps->sortBy('status_date')->last()->status_code;
+        $lastStatus = $awb->steps->sortBy('status_date')->last();
+        $statusCode = $lastStatus ? $lastStatus->status_code : "0";
         switch ($awb->carrier->id) {
             case 1:
                 // sameday carrier
@@ -50,7 +51,7 @@ class AwbChecker extends Controller
         }
     }
 
-    protected function sameday(Awb $awb)
+    protected static function sameday(Awb $awb)
     {
         $response = Http::withHeaders([
             'Accept' => 'application/json'
@@ -73,7 +74,7 @@ class AwbChecker extends Controller
         }
     }
 
-    protected function fancourier(Awb $awb)
+    protected static function fancourier(Awb $awb)
     {
         $response = Http::asForm()->post('https://www.fancourier.ro/limit-tracking.php', [
             'action' => 'get_awb',
