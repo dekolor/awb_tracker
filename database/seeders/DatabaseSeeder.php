@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
 //        Awb::factory(10)->create();
-        AwbStep::factory(10)->create();
+//        AwbStep::factory(10)->create();
 
         Carrier::factory()->create([
            'name' => 'Sameday',
