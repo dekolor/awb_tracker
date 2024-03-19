@@ -15,11 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-//        Awb::factory(10)->create();
-//        AwbStep::factory(10)->create();
-
         Carrier::factory()->create([
            'name' => 'Sameday',
            'logo' => '/img/logo-sameday.webp'
@@ -30,14 +25,10 @@ class DatabaseSeeder extends Seeder
             'logo' => '/img/logo-fan.svg'
         ]);
 
-        Carrier::factory()->create([
-            'name' => 'Cargus',
-            'logo' => '/img/logo-cargus.svg'
-        ]);
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+         \App\Models\User::factory()->create([
+             'name' => 'Test User',
+             'email' => 'test@example.com',
+             'password' => 'password123'
+         ]);
     }
 }
