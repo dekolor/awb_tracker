@@ -79,5 +79,9 @@ To start using Equine Tracker, follow these installation steps:
    php artisan serve
    ```
 
-Now you should see the app running on [127.0.0.1:8000](http://127.0.0.1:8000).
+Now you should see the app running on [127.0.0.1:8000](http://127.0.0.1:8000). You can login with the demo user below.
 
+### Demo user
+E-mail: ```test@example.com```
+
+Pasword: ```password123```
