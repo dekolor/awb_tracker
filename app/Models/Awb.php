@@ -12,7 +12,11 @@ class Awb extends Model
     protected $fillable = [
         'awb_number',
         'carrier_id',
-        'tag'
+        'tag',
+        'has_email_notifications',
+        'has_discord_notifications',
+        'notifications_mail_address',
+        'notifications_discord_webhook'
     ];
 
     public function steps()

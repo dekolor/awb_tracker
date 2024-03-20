@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('awb_number');
             $table->string('carrier_id');
             $table->string('tag');
+            $table->boolean('has_email_notifications')->default(false);
+            $table->boolean('has_discord_notifications')->default(false);
+            $table->string('notifications_mail_address')->nullable();
+            $table->string('notifications_discord_webhook')->nullable();
             $table->timestamps();
         });
     }
