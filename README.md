@@ -12,7 +12,8 @@
 
 1. [Introduction](#introduction)
 2. [Features](#features)
-3. [Installation](#installation)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
 
 ## Introduction
 
