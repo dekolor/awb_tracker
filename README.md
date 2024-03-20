@@ -28,6 +28,10 @@ AWB Tracker is a postal package tracking app that serves as a dashboard which sh
 - **Notifications**: You will be notified of every status change in the delivery.
 - **Runs in the background**: The app will check every five minutes for any status change on every AWB stored in the DB.
 
+## Requirements
+
+You need to have [PHP](https://www.php.net/) (^8.2), [Composer](https://getcomposer.org/), [Node.js](https://nodejs.org/)
+
 ## Installation
 
 To start using Equine Tracker, follow these installation steps:
