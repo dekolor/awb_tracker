@@ -6,7 +6,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/dekolor/awb_tracker)](https://github.com/dekolor/awb_tracker/network/members)
 [![GitHub Issues](https://img.shields.io/github/issues/dekolor/awb_tracker)](https://github.com/dekolor/awb_tracker/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/dekolor/awb_tracker)](https://github.com/dekolor/awb_tracker/pulls)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/dekolor/awb_tracker/laravel.yml)](https://github.com/dekolor/awb_tracker/pulls)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/dekolor/awb_tracker/laravel.yml)
 
 ## Table of Contents
 
