@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 
 class AwbController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return view('dashboard', [
-            'awbs' => Awb::with('carrier')->latest()->paginate(6)
+            'awbs' => Awb::with('carrier')
+                ->where('user_id', $request->user()->id)
+                ->latest()
+                ->paginate(6)
         ]);
     }
 
@@ -38,6 +41,7 @@ class AwbController extends Controller
         ]);
 
         $awb = Awb::create([
+            'user_id' => request()->user()->id,
             'awb_number' => request('awb_number'),
             'carrier_id' => request('carrier'),
             'tag' => request('tag'),

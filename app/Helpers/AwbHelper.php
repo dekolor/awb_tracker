@@ -16,24 +16,16 @@ class AwbHelper
         switch ($awb->carrier->id) {
             case 1:
                 // sameday carrier
-
                 // final status code for sameday is 9
                 if ($statusCode != "9") {
-                    echo "checking awb for " . $awb->tag . "\n";
                     AwbHelper::sameday($awb);
-                } else {
-                    echo "package already delivered, skipping... (" . $awb->tag . ")\n";
                 }
                 break;
             case 2:
                 // fan courier carrier
-
                 // final status code for fan courier is S2
                 if ($statusCode != "S2") {
-                    echo "checking awb for " . $awb->tag . "\n";
                     AwbHelper::fancourier($awb);
-                } else {
-                    echo "package already delivered, skipping... (" . $awb->tag . ")\n";
                 }
                 break;
             default:

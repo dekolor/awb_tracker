@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('awbs', function (Blueprint $table) {
             $table->id();
+            $table->string('user_id');
             $table->string('awb_number');
             $table->string('carrier_id');
             $table->string('tag');

@@ -10,6 +10,7 @@ class Awb extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'awb_number',
         'carrier_id',
         'tag',
@@ -27,5 +28,10 @@ class Awb extends Model
     public function carrier()
     {
         return $this->belongsTo(Carrier::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
