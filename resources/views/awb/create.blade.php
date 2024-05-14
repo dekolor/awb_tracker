@@ -26,7 +26,7 @@
                             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
                                 <div class="sm:col-span-3">
-                                    <label for="awb_number" class="block text-sm font-medium leading-6 text-white">AWB
+                                    <label for="awb_number" class="block text-sm font-medium leading-6 dark:text-white">AWB
                                         Number</label>
                                     <div class="mt-2">
                                         <input id="awb_number" name="awb_number" type="text" autocomplete="awb_number"
@@ -36,7 +36,7 @@
                                 </div>
 
                                 <div class="sm:col-span-3">
-                                    <label for="carrier" class="block text-sm font-medium leading-6 text-white">Carrier</label>
+                                    <label for="carrier" class="block text-sm font-medium leading-6 dark:text-white">Carrier</label>
                                     <div class="mt-2">
                                         <select id="carrier" name="carrier" autocomplete="carrier"
                                                 class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-full sm:text-sm sm:leading-6">
@@ -48,7 +48,7 @@
                                 </div>
 
                                 <div class="sm:col-span-3 sm:col-start-1">
-                                    <label for="tag" class="block text-sm font-medium leading-6 text-white">Tag
+                                    <label for="tag" class="block text-sm font-medium leading-6 dark:text-white">Tag
                                         (package name)</label>
                                     <div class="mt-2">
                                         <input type="text" name="tag" id="tag" autocomplete="tag"
@@ -78,7 +78,7 @@
                             <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
                                 <div class="sm:col-span-6">
-                                    <label for="notifications_mail_address" class="block text-sm font-medium leading-6 text-white">E-mail address (optional)</label>
+                                    <label for="notifications_mail_address" class="block text-sm font-medium leading-6 dark:text-white">E-mail address (optional)</label>
                                     <div class="mt-2">
                                         <input id="notifications_mail_address" name="notifications_mail_address" type="text" autocomplete="notifications_mail_address"
                                                class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -87,7 +87,7 @@
                                 </div>
 
                                 <div class="sm:col-span-6">
-                                    <label for="notifications_discord_webhook" class="block text-sm font-medium leading-6 text-white">Discord webhook URL (optional)</label>
+                                    <label for="notifications_discord_webhook" class="block text-sm font-medium leading-6 dark:text-white">Discord webhook URL (optional)</label>
                                     <div class="mt-2">
                                         <input type="text" name="notifications_discord_webhook" id="notifications_discord_webhook" autocomplete="notifications_discord_webhook"
                                                class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
