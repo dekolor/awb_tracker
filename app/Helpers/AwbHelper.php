@@ -73,7 +73,7 @@ class AwbHelper
 
         $awbSteps = json_decode($response->body(), TRUE);
 
-        if (!empty($awbSteps)) {
+        if (!empty($awbSteps) && isset($awbSteps['events'])) {
             static::processAwbSteps($awb, $awbSteps, 'events', [
                 'county' => 'location',
                 'country' => '',
