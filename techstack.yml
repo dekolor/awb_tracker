@@ -1,0 +1,401 @@
+repo_name: dekolor/awb_tracker
+report_id: 526832a753e3e11982cc47ee103768c8
+version: 0.1
+repo_type: Public
+timestamp: '2024-05-28T11:28:12+00:00'
+requested_by: dekolor
+provider: github
+branch: main
+detected_tools_count: 31
+tools:
+- name: CSS 3
+  description: The latest evolution of the Cascading Style Sheets language
+  website_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/dekolor/awb_tracker
+  detection_source: Repo Metadata
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/dekolor/awb_tracker
+  detection_source: Repo Metadata
+- name: PHP
+  description: A popular general-purpose scripting language that is especially suited
+    to web development
+  website_url: http://www.php.net/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/991/hwUcGZ41_400x400.jpg
+  detection_source_url: https://github.com/dekolor/awb_tracker
+  detection_source: Repo Metadata
+- name: AlpineJS
+  description: A lightweight JavaScript framework for building interactive web interfaces
+  website_url: https://alpinejs.dev/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Javascript UI Libraries
+  image_url: https://img.stackshare.io/service/101749/default_1affeb0b941376ae07126433311c338b5cd86701.jpg
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: Autoprefixer
+  description: PostCSS plugin to parse CSS and add vendor prefixes to CSS rules
+  website_url: https://github.com/postcss/autoprefixer
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: CSS Pre-processors / Extensions
+  image_url: https://img.stackshare.io/service/2202/72d087642cfce6fef6f2dabec5bf49e8_400x400.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: Guzzle
+  description: PHP HTTP client that makes it easy to send HTTP requests and trivial
+    to integrate with web services
+  website_url: http://guzzlephp.org/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Microframeworks (Backend)
+  image_url: https://img.stackshare.io/service/2350/638632.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.json
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-13 15:39:52.000000000 Z
+- name: Laravel
+  description: A PHP Framework For Web Artisans
+  website_url: http://laravel.com/
+  version: 10.48.3
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/992/AcA2LnWL_400x400.jpg
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: PostCSS
+  description: Transform CSS with JS plugins
+  website_url: https://github.com/postcss/postcss
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: CSS Pre-processors / Extensions
+  image_url: https://img.stackshare.io/service/3339/rlFcjEdI.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: Tailwind CSS
+  description: A utility-first CSS framework for rapid UI development
+  website_url: https://tailwindcss.com
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Front-End Frameworks
+  image_url: https://img.stackshare.io/service/8158/default_660b7c41c3ba489cb581eec89c04655404258c19.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: Cloud DB for Mysql
+  description: Easily setup and manage the MySQL database service
+  website_url: https://www.ncloud.com/product/database/cloudDbMysql
+  open_source: false
+  hosted_saas: true
+  category: Data Stores
+  sub_category: SQL Database as a Service
+  image_url: https://img.stackshare.io/service/21275/default_078eb0ae2b56280a937ed073a3ba4332291f9ba8.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/docker-compose.yml
+  detection_source: docker-compose.yml
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: MySQL
+  description: The world's most popular open source database
+  website_url: http://www.mysql.com
+  version: '8.0'
+  open_source: true
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Databases
+  image_url: https://img.stackshare.io/service/1025/logo-mysql-170x170.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/docker-compose.yml
+  detection_source: docker-compose.yml
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: Docker
+  description: Enterprise Container Platform for High-Velocity Innovation.
+  website_url: https://www.docker.com/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Virtual Machine Platforms & Containers
+  image_url: https://img.stackshare.io/service/586/n4u37v9t_400x400.png
+  detection_source_url: https://github.com/dekolor/awb_tracker
+  detection_source: Repo Metadata
+- name: Docker Compose
+  description: Define and run multi-container applications with Docker
+  website_url: https://github.com/docker/compose
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Container Tools
+  image_url: https://img.stackshare.io/service/3136/docker-compose.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/docker-compose.yml
+  detection_source: docker-compose.yml
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/dekolor/awb_tracker
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/.github/workflows/laravel.yml
+  detection_source: ".github/workflows/laravel.yml"
+  last_updated_by: stefan
+  last_updated_on: 2024-03-18 13:34:14.000000000 Z
+- name: NGINX
+  description: A high performance free open source web server powering busiest sites
+    on the Internet.
+  website_url: http://nginx.org
+  open_source: false
+  hosted_saas: false
+  category: Application Hosting
+  sub_category: Web Servers
+  image_url: https://img.stackshare.io/service/1052/YMxUfyWf.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/docker-compose.yml
+  detection_source: docker-compose.yml
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: PHPUnit
+  description: Testing framework for PHP
+  website_url: https://phpunit.de/
+  version: 10.5.13
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Testing Frameworks
+  image_url: https://img.stackshare.io/service/1616/1_WsEnddd5Y4EgEHsT054kUQ.jpeg
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: PhpSpec
+  description: A  toolset for behavior driven development
+  website_url: http://www.phpspec.net/en/latest/
+  version: 8.2.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Testing Frameworks
+  image_url: https://img.stackshare.io/service/3502/6b9dfb07681dee602dbdf75d9393f07c_400x400.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/Dockerfile
+  detection_source: Dockerfile
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: Vite
+  description: Native-ESM powered web dev build tool
+  website_url: https://vitejs.dev/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: JS Build Tools / JS Task Runners
+  image_url: https://img.stackshare.io/service/21547/default_1aeac791cde11ff66cc0b20dcc6144eeb185c905.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: Alpine Linux
+  description: Security-oriented, lightweight Linux distribution based on musl libc
+    and busybox
+  website_url: https://www.alpinelinux.org/
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Operating Systems
+  image_url: https://img.stackshare.io/service/6429/alpine_linux.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/docker-compose.yml
+  detection_source: docker-compose.yml
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:25:46.000000000 Z
+- name: axios
+  description: Promise based HTTP client for the browser and node.js
+  website_url: https://github.com/mzabriskie/axios
+  version: 1.6.7
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Javascript Utilities & Libraries
+  image_url: https://img.stackshare.io/no-img-open-source.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: guzzlehttp/guzzle
+  description: Guzzle is a PHP HTTP client library
+  package_url: https://packagist.org/guzzlehttp/guzzle
+  version: 7.8.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-13 15:39:52.000000000 Z
+- name: itsgoingd/clockwork
+  description: Php dev tools in your browser
+  package_url: https://packagist.org/itsgoingd/clockwork
+  version: 5.2.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-13 15:39:52.000000000 Z
+- name: laravel/framework
+  description: The Laravel Framework
+  package_url: https://packagist.org/laravel/framework
+  version: 10.48.3
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-13 15:39:52.000000000 Z
+- name: laravel/tinker
+  description: Powerful REPL for the Laravel framework
+  package_url: https://packagist.org/laravel/tinker
+  version: 2.9.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: mockery/mockery
+  description: Mockery is a simple yet flexible PHP mock object framework
+  package_url: https://packagist.org/mockery/mockery
+  version: 1.6.9
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: nunomaduro/collision
+  description: Cli error handling for console/command-line PHP applications
+  package_url: https://packagist.org/nunomaduro/collision
+  version: 7.10.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: phpunit/phpunit
+  description: The PHP Unit Testing framework
+  package_url: https://packagist.org/phpunit/phpunit
+  version: 10.5.13
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/packagist/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/composer.lock
+  detection_source: composer.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:12.000000000 Z
+- name: tailwindcss
+  description: A utility-first CSS framework for rapidly building custom user interfaces
+  package_url: https://www.npmjs.com/tailwindcss
+  version: 3.4.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17398/default_2cd7ed1c123f2fca074a6f4b16c4e73d5bfe82be.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-03-12 12:52:25.000000000 Z
+- name: vite
+  description: Native-ESM powered web dev build tool
+  package_url: https://www.npmjs.com/vite
+  version: 5.2.11
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/npm/image.png
+  detection_source_url: https://github.com/dekolor/awb_tracker/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: dekolor
+  last_updated_on: 2024-05-09 14:28:54.000000000 Z
