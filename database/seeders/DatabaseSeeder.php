@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Awb;
-use App\Models\AwbStep;
-use App\Models\Carrier;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,20 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Carrier::factory()->create([
-           'name' => 'Sameday',
-           'logo' => '/img/logo-sameday.webp'
-        ]);
+        // User::factory(10)->create();
 
-        Carrier::factory()->create([
-            'name' => 'Fan Courier',
-            'logo' => '/img/logo-fan.svg'
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
         ]);
-
-         \App\Models\User::factory()->create([
-             'name' => 'Test User',
-             'email' => 'test@example.com',
-             'password' => 'password123'
-         ]);
     }
 }
