@@ -9,7 +9,7 @@ RUN npm run build
 # Production stage
 FROM php:8.2-fpm-alpine
 
-# Install system dependencies (removed nodejs/npm since we don't need them in production)
+# system deps + sqlite
 RUN apk add --no-cache \
     git \
     curl \
@@ -21,38 +21,44 @@ RUN apk add --no-cache \
     sqlite \
     sqlite-dev
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd
+# PHP extensions
+RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl \
+    bcmath gd
 
-# Install Composer
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www
 
-# Copy composer files
+# install PHP deps
 COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader \
+    --no-interaction --no-scripts
 
-# Install composer dependencies WITHOUT running scripts
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-
-# Copy application code
+# copy app + assets
 COPY . .
-
-# Copy pre-built assets from frontend build stage
 COPY --from=frontend-build /app/public/build ./public/build
 
-# Now run composer scripts
+# post-autoload
 RUN composer run-script post-autoload-dump
 
-# Set permissions
+# perms
 RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage
+ && chmod -R 755 /var/www/storage
 
-# Create SQLite database file
-RUN touch /var/www/database/database.sqlite \
-    && chown www-data:www-data /var/www/database/database.sqlite
+# **Declare database folder as a volume**
+VOLUME ["/var/www/database"]
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "[ -z \"$APP_KEY\" ] && php artisan key:generate --no-interaction --force || true; php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
+# entrypoint: ensure sqlite file exists, then migrate & serve
+CMD ["sh", "-c", "\
+    if [ ! -f database/database.sqlite ]; then \
+      touch database/database.sqlite && \
+      chown www-data:www-data database/database.sqlite; \
+    fi && \
+    [ -z \"$APP_KEY\" ] && \
+      php artisan key:generate --no-interaction --force || true && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=8000\
+"]
