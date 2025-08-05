@@ -50,7 +50,9 @@ class PackageController extends Controller
     public function show(Package $package)
     {
         return Inertia::render('packages/show', [
-            'package' => $package
+            'package' => $package,
+            'events' => $package->events,
+            'carrier' => $package->carrier,
         ]);
     }
 

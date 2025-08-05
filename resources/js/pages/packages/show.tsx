@@ -2,11 +2,33 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, MapPin, Package, Truck } from 'lucide-react';
+import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, Info, MapPin, Package, Truck } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface PackageEvent {
+    id: string | number;
+    status: string;
+    longStatus: string;
+    location?: string;
+    destination?: string;
+    statusDate: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface Carrier {
+    id: number;
+    websiteUrl: string;
+    logoUrl: string;
+    trackingUrl: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
 
 interface ShowPackageProps {
     package: {
@@ -21,9 +43,11 @@ interface ShowPackageProps {
         origin: string;
         destination: string;
         estimatedDelivery: string;
-        lastUpdated: string;
-        createdAt?: string;
+        created_at: string;
+        updated_at: string;
     };
+    events: PackageEvent[];
+    carrier: Carrier;
 }
 
 const getStatusColor = (status: string) => {
@@ -55,13 +79,14 @@ const formatDate = (dateString: string) => {
 const copyToClipboard = async (text: string) => {
     try {
         await navigator.clipboard.writeText(text);
-        toast.success('Tracking number copied to clipboard');
     } catch {
         toast.error('Failed to copy tracking number');
+        return;
     }
+    toast.success('Tracking number copied to clipboard');
 };
 
-export default function ShowPackage({ package: pkg }: ShowPackageProps) {
+export default function ShowPackage({ package: pkg, events, carrier }: ShowPackageProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Packages',
@@ -142,7 +167,7 @@ export default function ShowPackage({ package: pkg }: ShowPackageProps) {
                                 <label className="text-sm font-medium text-muted-foreground">Carrier</label>
                                 <p className="mt-1 flex items-center gap-2">
                                     <Truck className="h-4 w-4" />
-                                    {pkg.carrierName || `Carrier ID: ${pkg.carrierId}`}
+                                    {carrier.name || `Carrier ID: ${pkg.carrierId}`}
                                 </p>
                             </div>
                         </CardContent>
@@ -159,7 +184,7 @@ export default function ShowPackage({ package: pkg }: ShowPackageProps) {
                         <CardContent className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Origin</label>
-                                <p className="mt-1">{pkg.origin}</p>
+                                <p className="mt-1">{events.length > 0 && events[0].location}</p>
                             </div>
 
                             <div className="flex justify-center">
@@ -168,7 +193,7 @@ export default function ShowPackage({ package: pkg }: ShowPackageProps) {
 
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Destination</label>
-                                <p className="mt-1">{pkg.destination}</p>
+                                <p className="mt-1">{events.length > 0 && events[events.length - 1].location}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -183,21 +208,19 @@ export default function ShowPackage({ package: pkg }: ShowPackageProps) {
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-3">
-                                {pkg.createdAt && (
-                                    <div className="rounded-lg bg-muted/50 p-4 text-center">
-                                        <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
-                                        <div className="text-sm font-medium">Created</div>
-                                        <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.createdAt)}</div>
-                                    </div>
-                                )}
-
-                                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-center">
-                                    <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
-                                    <div className="text-sm font-medium">Last Updated</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.lastUpdated)}</div>
+                                <div className="rounded-lg bg-secondary p-4 text-center">
+                                    <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
+                                    <div className="text-sm font-medium">Created</div>
+                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.created_at)}</div>
                                 </div>
 
-                                <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-center">
+                                <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
+                                    <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
+                                    <div className="text-sm font-medium">Last Updated</div>
+                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.updated_at)}</div>
+                                </div>
+
+                                <div className="rounded-lg border border-green-200 bg-secondary p-4 text-center">
                                     <Calendar className="mx-auto mb-2 h-5 w-5 text-green-600" />
                                     <div className="text-sm font-medium">Estimated Delivery</div>
                                     <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.estimatedDelivery)}</div>
@@ -206,6 +229,72 @@ export default function ShowPackage({ package: pkg }: ShowPackageProps) {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/*  Event History */}
+                <Card className="md:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Info className="h-5 w-5" />
+                            Event History
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-3 md:hidden">
+                            {events.length === 0 && <div className="text-sm text-muted-foreground">No events recorded yet.</div>}
+                            {events.map((evt) => (
+                                <div key={evt.id} className="rounded-lg border bg-card p-3 shadow-sm">
+                                    <div className="flex items-center justify-between">
+                                        <Badge variant="outline" className={getStatusColor(evt.status)}>
+                                            {evt.status.replace('_', ' ').toUpperCase()}
+                                        </Badge>
+                                        <span className="text-xs text-muted-foreground">{formatDate(evt.created_at)}</span>
+                                    </div>
+                                    <div className="mt-2 text-sm">{evt.longStatus || 'No description'}</div>
+                                    <div className="mt-1 text-xs text-muted-foreground">{evt.location || '—'}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="hidden w-full overflow-x-auto md:block">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[160px]">Date & Time</TableHead>
+                                        <TableHead className="w-[160px]">Status</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead className="w-[220px]">Location</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {events.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={4} className="text-center text-sm text-muted-foreground">
+                                                No events recorded yet.
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        events.map((evt) => (
+                                            <TableRow key={evt.id}>
+                                                <TableCell className="whitespace-nowrap">{formatDate(evt.statusDate)}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline" className={getStatusColor(evt.status)}>
+                                                        {evt.status.replace('_', ' ').toUpperCase()}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="max-w-[520px]">
+                                                    <div className="truncate" title={evt.status}>
+                                                        {evt.longStatus || 'No description'}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap">{evt.location || '—'}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-4">
