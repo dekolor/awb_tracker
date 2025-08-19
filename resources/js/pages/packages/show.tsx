@@ -86,6 +86,14 @@ const copyToClipboard = async (text: string) => {
     toast.success('Tracking number copied to clipboard');
 };
 
+const findOrigin = (events: PackageEvent[]): string => {
+    return [...events].reverse().find((event) => event.location != "")?.location || "";
+}
+
+const findDestination = (events: PackageEvent[]): string => {
+    return events.find((event) => event.location != "")?.location || "";
+};
+
 export default function ShowPackage({ package: pkg, events, carrier }: ShowPackageProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -184,7 +192,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                         <CardContent className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Origin</label>
-                                <p className="mt-1">{events.length > 0 && events[0].location}</p>
+                                <p className="mt-1">{events.length > 0 && findOrigin(events)}</p>
                             </div>
 
                             <div className="flex justify-center">
@@ -193,7 +201,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
 
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Destination</label>
-                                <p className="mt-1">{events.length > 0 && events[events.length - 1].location}</p>
+                                <p className="mt-1">{events.length > 0 && findDestination(events)}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -207,24 +215,23 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid gap-4 md:grid-cols-3">
+                            <div className="grid gap-4 md:grid-cols-2">
                                 <div className="rounded-lg bg-secondary p-4 text-center">
                                     <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                                     <div className="text-sm font-medium">Created</div>
                                     <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.created_at)}</div>
                                 </div>
-
                                 <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
                                     <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
                                     <div className="text-sm font-medium">Last Updated</div>
                                     <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.updated_at)}</div>
                                 </div>
 
-                                <div className="rounded-lg border border-green-200 bg-secondary p-4 text-center">
+                                {/* <div className="rounded-lg border border-green-200 bg-secondary p-4 text-center">
                                     <Calendar className="mx-auto mb-2 h-5 w-5 text-green-600" />
                                     <div className="text-sm font-medium">Estimated Delivery</div>
                                     <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.estimatedDelivery)}</div>
-                                </div>
+                                </div> */}
                             </div>
                         </CardContent>
                     </Card>

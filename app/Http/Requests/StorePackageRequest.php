@@ -23,7 +23,7 @@ class StorePackageRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
+            'description' => 'nullable|string|max:1000',
             'trackingNumber' => 'required|string|max:255',
             'carrierId' => 'required|integer|exists:carriers,id',
             'ownerId' => 'required|integer|exists:users,id',
