@@ -11,19 +11,19 @@ FROM php:8.2-fpm-alpine
 
 # system deps + sqlite
 RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    oniguruma-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    sqlite \
-    sqlite-dev
+  git \
+  curl \
+  libpng-dev \
+  oniguruma-dev \
+  libxml2-dev \
+  zip \
+  unzip \
+  sqlite \
+  sqlite-dev
 
 # PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl \
-    bcmath gd
+  bcmath gd
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -33,7 +33,7 @@ WORKDIR /var/www
 # install PHP deps
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader \
-    --no-interaction --no-scripts
+  --no-interaction --no-scripts
 
 # copy app + assets
 COPY . .
@@ -44,7 +44,7 @@ RUN composer run-script post-autoload-dump
 
 # perms
 RUN chown -R www-data:www-data /var/www \
- && chmod -R 755 /var/www/storage
+  && chmod -R 755 /var/www/storage
 
 # **Declare database folder as a volume**
 VOLUME ["/var/www/database"]
@@ -53,12 +53,13 @@ EXPOSE 8000
 
 # entrypoint: ensure sqlite file exists, then migrate & serve
 CMD ["sh", "-c", "\
-    if [ ! -f database/database.sqlite ]; then \
-      touch database/database.sqlite && \
-      chown www-data:www-data database/database.sqlite; \
-    fi && \
-    [ -z \"$APP_KEY\" ] && \
-      php artisan key:generate --no-interaction --force || true && \
-    php artisan migrate --force && \
-    php artisan serve --host=0.0.0.0 --port=8000\
-"]
+  if [ ! -f database/database.sqlite ]; then \
+  touch database/database.sqlite && \
+  chown www-data:www-data database/database.sqlite; \
+  fi && \
+  [ -z \"$APP_KEY\" ] && \
+  php artisan key:generate --no-interaction --force || true && \
+  php artisan migrate --force && \
+  php artisan db:seed --force && \
+  php artisan serve --host=0.0.0.0 --port=8000\
+  "]
