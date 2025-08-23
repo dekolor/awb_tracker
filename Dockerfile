@@ -61,6 +61,6 @@ CMD ["sh", "-c", "\
   php artisan key:generate --no-interaction --force || true && \
   php artisan migrate --force && \
   composer install --no-dev --optimize-autoloader && \
-  php artisan db:seed && \
+  php artisan db:seed --force && \
   php artisan serve --host=0.0.0.0 --port=8000\
   "]
