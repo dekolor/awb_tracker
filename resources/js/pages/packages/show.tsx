@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, Info, MapPin, Package, Truck } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -66,8 +66,11 @@ const getStatusColor = (status: string) => {
     }
 };
 
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    return d.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -86,12 +89,12 @@ const copyToClipboard = async (text: string) => {
     toast.success('Tracking number copied to clipboard');
 };
 
-const findOrigin = (events: PackageEvent[]): string => {
-    return [...events].reverse().find((event) => event.location != null)?.location || "";
+const findOrigin = (events: PackageEvent[] = []): string => {
+    return [...(events || [])].reverse().find((event) => event?.location != null)?.location || '';
 }
 
-const findDestination = (events: PackageEvent[]): string => {
-    return events.find((event) => event.location != null)?.location || "";
+const findDestination = (events: PackageEvent[] = []): string => {
+    return (events || []).find((event) => event?.location != null)?.location || '';
 };
 
 export default function ShowPackage({ package: pkg, events, carrier }: ShowPackageProps) {
@@ -105,6 +108,12 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
             href: `/packages/${pkg.id}`,
         },
     ];
+
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
+            router.delete(route('packages.destroy', { package: pkg.id }));
+        }
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -192,7 +201,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                         <CardContent className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Origin</label>
-                                <p className="mt-1">{events.length > 0 && findOrigin(events)}</p>
+                                <p className="mt-1">{events.length > 0 ? findOrigin(events) : '—'}</p>
                             </div>
 
                             <div className="flex justify-center">
@@ -201,7 +210,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
 
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Destination</label>
-                                <p className="mt-1">{events.length > 0 && findDestination(events)}</p>
+                                <p className="mt-1">{events.length > 0 ? findDestination(events) : '—'}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -216,17 +225,27 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-2">
-                                <div className="rounded-lg bg-secondary p-4 text-center">
-                                    <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
-                                    <div className="text-sm font-medium">Created</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(events[events.length - 1].statusDate)}</div>
-                                </div>
-                                <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
-                                    <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
-                                    <div className="text-sm font-medium">Last Updated</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(events[0].statusDate)}</div>
-                                </div>
-
+                                {(() => {
+                                    const sorted = [...events].sort((a, b) => new Date(a.statusDate).getTime() - new Date(b.statusDate).getTime());
+                                    const hasEvents = sorted.length > 0;
+                                    const earliest = hasEvents ? sorted[0] : undefined;
+                                    const latest = hasEvents ? sorted[sorted.length - 1] : undefined;
+                                    return (
+                                        <>
+                                            <div className="rounded-lg bg-secondary p-4 text-center">
+                                                <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
+                                                <div className="text-sm font-medium">Created</div>
+                                                <div className="mt-1 text-xs text-muted-foreground">{hasEvents ? formatDate(earliest?.statusDate) : '—'}</div>
+                                            </div>
+                                            <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
+                                                <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
+                                                <div className="text-sm font-medium">Last Updated</div>
+                                                <div className="mt-1 text-xs text-muted-foreground">{hasEvents ? formatDate(latest?.statusDate) : '—'}</div>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
+                                
                                 {/* <div className="rounded-lg border border-green-200 bg-secondary p-4 text-center">
                                     <Calendar className="mx-auto mb-2 h-5 w-5 text-green-600" />
                                     <div className="text-sm font-medium">Estimated Delivery</div>
@@ -248,7 +267,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                     <CardContent className="space-y-4">
                         <div className="space-y-3 md:hidden">
                             {events.length === 0 && <div className="text-sm text-muted-foreground">No events recorded yet.</div>}
-                            {events.sort((a, b) => (new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())).map((evt) => (
+                            {[...events].sort((a, b) => (new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())).map((evt) => (
                                 <div key={evt.id} className="rounded-lg border bg-card p-3 shadow-sm">
                                     <div className="flex items-center justify-between">
                                         <Badge variant="outline" className={getStatusColor(evt.status)}>
@@ -309,6 +328,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                         <Button variant="outline" disabled>Edit Package</Button>
                     </Link>
                     <Button variant="outline" disabled>{pkg.notificationsEnabled ? 'Disable' : 'Enable'} Notifications</Button>
+                    <Button variant="outline" onClick={handleDelete}>Delete Package</Button>
                 </div>
             </div>
         </AppLayout>

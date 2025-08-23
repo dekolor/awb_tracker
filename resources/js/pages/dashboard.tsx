@@ -86,12 +86,12 @@ export default function Dashboard({ packages }: DashboardProps) {
   const [filter, setFilter] =
     useState<'all' | 'pending' | 'in-transit' | 'delivered'>('all');
 
-  const findOrigin = (events: PackageEvent[]): string => {
-    return [...events].reverse().find((event) => event.location != null)?.location || "";
+  const findOrigin = (events: PackageEvent[] = []): string => {
+    return [...(events || [])].reverse().find((event) => event?.location != null)?.location || '';
   }
 
-  const findDestination = (events: PackageEvent[]): string => {
-    return events.find((event) => event.location != null)?.location || "";
+  const findDestination = (events: PackageEvent[] = []): string => {
+    return (events || []).find((event) => event?.location != null)?.location || '';
   };
 
   const recentSorted = useMemo(
@@ -131,8 +131,10 @@ export default function Dashboard({ packages }: DashboardProps) {
     }
   };
 
-  const formatDate = (date: string): string => {
-    return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_MED);
+  const formatDate = (date?: string): string => {
+    if (!date) return 'N/A';
+    const dt = DateTime.fromISO(date);
+    return dt.isValid ? dt.toLocaleString(DateTime.DATETIME_MED) : date;
   }
 
   const totalLabel =
@@ -221,6 +223,9 @@ export default function Dashboard({ packages }: DashboardProps) {
                 const meta = statusMeta(pkg.status);
                 const StatusIcon = meta.icon;
                 const href = `/packages/${pkg.id}`;
+                const lastEvent = pkg.events && pkg.events.length > 0
+                  ? pkg.events[pkg.events.length - 1]
+                  : undefined;
 
                 return (
                   <div
@@ -248,14 +253,18 @@ export default function Dashboard({ packages }: DashboardProps) {
                             <MapPin className="h-4 w-4" />
                             {findOrigin(pkg.events)} → {findDestination(pkg.events)}
                           </span>
-                          <span className="hidden sm:inline">•</span>
-                          <span
-                            className="inline-flex items-center gap-1"
-                            title={formatDate(pkg.events[pkg.events.length - 1].statusDate)}
-                          >
-                            <Clock className="h-4 w-4" />
-                            Updated {formatDate(pkg.events[pkg.events.length - 1].statusDate)}
-                          </span>
+                          {lastEvent?.statusDate && (
+                            <>
+                              <span className="hidden sm:inline">•</span>
+                              <span
+                                className="inline-flex items-center gap-1"
+                                title={formatDate(lastEvent.statusDate)}
+                              >
+                                <Clock className="h-4 w-4" />
+                                Updated {formatDate(lastEvent.statusDate)}
+                              </span>
+                            </>
+                          )}
                           {pkg.estimatedDelivery && (
                             <>
                               <span className="hidden sm:inline">•</span>

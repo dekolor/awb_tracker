@@ -71,7 +71,9 @@ export default function CreatePackage({ carriers }: CreatePackageProps) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {carriers.map((carrier) => (
-                                            <SelectItem value={carrier.id.toString()}>{carrier.name}</SelectItem>
+                                            <SelectItem key={carrier.id} value={carrier.id.toString()}>
+                                                {carrier.name}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>

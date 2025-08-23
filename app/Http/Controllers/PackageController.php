@@ -40,7 +40,7 @@ class PackageController extends Controller
 
         Package::create($data);
 
-        return to_route('packages.index')->with('success', 'Package created successfully.');
+        return to_route('dashboard')->with('success', 'Package created successfully.');
 
     }
 
@@ -77,6 +77,8 @@ class PackageController extends Controller
      */
     public function destroy(Package $package)
     {
-        //
+        $package->delete();
+
+        return to_route('dashboard')->with('success', 'Package deleted successfully.');
     }
 }
