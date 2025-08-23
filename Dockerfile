@@ -30,13 +30,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# install PHP deps
-COPY composer.json composer.lock ./
+# copy app files first
+COPY . .
+
+# install PHP deps (after copying code to ensure fresh installs)
 RUN composer install --no-dev --optimize-autoloader \
   --no-interaction --no-scripts
-
-# copy app + assets
-COPY . .
 COPY --from=frontend-build /app/public/build ./public/build
 
 # post-autoload
