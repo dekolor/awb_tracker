@@ -17,9 +17,9 @@ class PackageFactory extends Factory
     public function definition(): array
     {
         return [
-            "name" => $this->faker->name,
-            "description" => $this->faker->text,
-            "trackingNumber" => $this->faker->unique()->numerify('TRK-##########'),
+            "name" => 'Test Package',
+            "description" => 'Test package description',
+            "trackingNumber" => 'TRK-' . uniqid(),
             "carrierId" => 1,
             "ownerId" => 1,
         ];

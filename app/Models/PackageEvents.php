@@ -17,4 +17,8 @@ class PackageEvents extends Model
         'destination',
         'statusDate', // Added to store the date of the status update
     ];
+
+    protected $casts = [
+        'statusDate' => 'datetime',
+    ];
 }

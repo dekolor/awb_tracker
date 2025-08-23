@@ -16,7 +16,10 @@ class Package extends Model
         'description',
         'trackingNumber',
         'carrierId',
-        'ownerId'
+        'ownerId',
+        'origin',
+        'destination',
+        'status',
     ];
 
     public function events()

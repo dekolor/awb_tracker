@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -93,9 +93,11 @@ export default function CreatePackage({ carriers }: CreatePackageProps) {
                                 <Button type="submit" disabled={processing} className="flex-1">
                                     {processing ? 'Adding Package...' : 'Add Package'}
                                 </Button>
-                                <Button type="button" variant="outline" className="flex-1">
-                                    Cancel
-                                </Button>
+                                <Link href="/dashboard" className="flex-1">
+                                    <Button type="button" variant="outline" className="w-full">
+                                        Cancel
+                                    </Button>
+                                </Link>
                             </div>
                         </form>
                     </CardContent>

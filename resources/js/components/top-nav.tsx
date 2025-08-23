@@ -2,7 +2,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { UserMenuContent } from '@/components/user-menu-content';
@@ -10,7 +10,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, HelpCircle, LayoutGrid, Menu, Plus, RefreshCw } from 'lucide-react';
+import { Folder, LayoutGrid, Menu, Plus, RefreshCw } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -23,19 +23,6 @@ const mainTabs: NavItem[] = [
     {
         title: 'Packages', 
         href: '/packages',
-        icon: Folder,
-    },
-];
-
-const helpItems: NavItem[] = [
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
         icon: Folder,
     },
 ];
@@ -125,22 +112,6 @@ export function TopNav({ breadcrumbs = [] }: TopNavProps) {
                                             Refresh
                                         </button>
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <p className="text-sm font-medium text-muted-foreground">Help</p>
-                                        {helpItems.map((item) => (
-                                            <a
-                                                key={item.title}
-                                                href={item.href}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-                                            >
-                                                {item.icon && <Icon iconNode={item.icon} className="h-4 w-4" />}
-                                                {item.title}
-                                            </a>
-                                        ))}
-                                    </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
@@ -209,35 +180,6 @@ export function TopNav({ breadcrumbs = [] }: TopNavProps) {
                         >
                             <RefreshCw className="h-4 w-4" />
                         </Button>
-
-                        {/* Help Menu */}
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="h-9 w-9"
-                                    aria-label="Help menu"
-                                >
-                                    <HelpCircle className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                                {helpItems.map((item, index) => (
-                                    <DropdownMenuItem key={item.title} asChild>
-                                        <a
-                                            href={item.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2"
-                                        >
-                                            {item.icon && <Icon iconNode={item.icon} className="h-4 w-4" />}
-                                            {item.title}
-                                        </a>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
 
                         {/* User Menu */}
                         <DropdownMenu>

@@ -23,7 +23,7 @@ class PackageController extends Controller
      */
     public function create()
     {
-        $carriers = Carrier::all(['id', 'name']);
+        $carriers = Carrier::all();
 
         return Inertia::render('packages/create', [
             'carriers' => $carriers

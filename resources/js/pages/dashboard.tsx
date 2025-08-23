@@ -15,15 +15,15 @@ import {
   Package as PackageIcon,
   Truck,
   CheckCircle2,
-  Plus,
   MapPin,
   Clock,
   Copy,
   Check,
   ChevronRight,
-  RefreshCw,
   Search as SearchIcon,
 } from 'lucide-react';
+import { PackageEvent } from './packages/show';
+import { DateTime } from 'luxon';
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: '/dashboard' },
@@ -42,36 +42,8 @@ interface DashboardProps {
     destination: string;
     estimatedDelivery: string;
     lastUpdated: string;
+    events: PackageEvent[];
   }[];
-}
-
-function formatDate(input?: string) {
-  if (!input) return 'Never';
-  const d = new Date(input);
-  if (isNaN(d.getTime())) return 'Never';
-  return d.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function toRelative(input?: string) {
-  if (!input) return 'Never';
-  const d = new Date(input);
-  if (isNaN(d.getTime())) return 'Never';
-  const diff = Date.now() - d.getTime();
-  const abs = Math.abs(diff);
-
-  const mins = Math.round(abs / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.round(hours / 24);
-  return `${days}d ago`;
 }
 
 function statusMeta(statusRaw: string) {
@@ -109,19 +81,18 @@ export default function Dashboard({ packages }: DashboardProps) {
   const deliveredCount = packages.filter((p) => /deliver/i.test(p.status)).length;
   const inTransitCount = packages.filter((p) => /(transit|shipped|out)/i.test(p.status)).length;
 
-  // Last sync based on most recent package update
-  const lastSync: Date | null = useMemo(() => {
-    if (!packages.length) return null;
-    const max = Math.max(
-      ...packages.map((p) => (new Date(p.lastUpdated).getTime() || 0))
-    );
-    return isNaN(max) || max <= 0 ? null : new Date(max);
-  }, [packages]);
-
   // Local state: search & filter
   const [query, setQuery] = useState('');
   const [filter, setFilter] =
     useState<'all' | 'pending' | 'in-transit' | 'delivered'>('all');
+
+  const findOrigin = (events: PackageEvent[]): string => {
+    return [...events].reverse().find((event) => event.location != null)?.location || "";
+  }
+
+  const findDestination = (events: PackageEvent[]): string => {
+    return events.find((event) => event.location != null)?.location || "";
+  };
 
   const recentSorted = useMemo(
     () =>
@@ -160,6 +131,10 @@ export default function Dashboard({ packages }: DashboardProps) {
     }
   };
 
+  const formatDate = (date: string): string => {
+    return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_MED);
+  }
+
   const totalLabel =
     total === 0 ? 'No packages yet' : `${filtered.length} of ${total} shown`;
 
@@ -178,7 +153,7 @@ export default function Dashboard({ packages }: DashboardProps) {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="hidden lg:grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
             title="Total Packages"
             value={`${total}`}
@@ -252,15 +227,15 @@ export default function Dashboard({ packages }: DashboardProps) {
                     key={pkg.id}
                     role="button"
                     onClick={() => router.visit(href)}
-                    className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg border bg-card p-4 transition-all hover:bg-accent hover:text-accent-foreground"
+                    className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg border bg-card p-4 transition-all hover:bg-accent hover:text-accent-foreground w-full"
                   >
-                    <div className="flex min-w-0 items-start gap-3">
+                    <div className="flex min-w-0 items-start gap-3 w-full">
                       <div className="mt-1 rounded-md bg-primary/10 p-2 text-primary">
                         <PackageIcon className="h-5 w-5" />
                       </div>
 
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
+                      <div className="min-w-0 w-full">
+                        <div className="flex items-center gap-2 justify-between w-full">
                           <h3 className="truncate text-base font-medium">{pkg.name}</h3>
                           <Badge variant="secondary" className={meta.className}>
                             <StatusIcon className="mr-1 h-3.5 w-3.5" />
@@ -271,21 +246,21 @@ export default function Dashboard({ packages }: DashboardProps) {
                         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
                           <span className="inline-flex items-center gap-1">
                             <MapPin className="h-4 w-4" />
-                            {pkg.origin} → {pkg.destination}
+                            {findOrigin(pkg.events)} → {findDestination(pkg.events)}
                           </span>
                           <span className="hidden sm:inline">•</span>
                           <span
                             className="inline-flex items-center gap-1"
-                            title={formatDate(pkg.lastUpdated)}
+                            title={formatDate(pkg.events[pkg.events.length - 1].statusDate)}
                           >
                             <Clock className="h-4 w-4" />
-                            Updated {toRelative(pkg.lastUpdated)}
+                            Updated {formatDate(pkg.events[pkg.events.length - 1].statusDate)}
                           </span>
                           {pkg.estimatedDelivery && (
                             <>
                               <span className="hidden sm:inline">•</span>
-                              <span title={formatDate(pkg.estimatedDelivery)}>
-                                ETA {toRelative(pkg.estimatedDelivery)}
+                              <span title={pkg.estimatedDelivery}>
+                                ETA {pkg.estimatedDelivery}
                               </span>
                             </>
                           )}

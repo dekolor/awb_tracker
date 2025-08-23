@@ -9,7 +9,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, Info, MapPin, Package, Truck } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface PackageEvent {
+export interface PackageEvent {
     id: string | number;
     status: string;
     longStatus: string;
@@ -87,11 +87,11 @@ const copyToClipboard = async (text: string) => {
 };
 
 const findOrigin = (events: PackageEvent[]): string => {
-    return [...events].reverse().find((event) => event.location != "")?.location || "";
+    return [...events].reverse().find((event) => event.location != null)?.location || "";
 }
 
 const findDestination = (events: PackageEvent[]): string => {
-    return events.find((event) => event.location != "")?.location || "";
+    return events.find((event) => event.location != null)?.location || "";
 };
 
 export default function ShowPackage({ package: pkg, events, carrier }: ShowPackageProps) {
@@ -219,12 +219,12 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                                 <div className="rounded-lg bg-secondary p-4 text-center">
                                     <Calendar className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                                     <div className="text-sm font-medium">Created</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.created_at)}</div>
+                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(events[events.length - 1].statusDate)}</div>
                                 </div>
                                 <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
                                     <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
                                     <div className="text-sm font-medium">Last Updated</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.updated_at)}</div>
+                                    <div className="mt-1 text-xs text-muted-foreground">{formatDate(events[0].statusDate)}</div>
                                 </div>
 
                                 {/* <div className="rounded-lg border border-green-200 bg-secondary p-4 text-center">
@@ -248,7 +248,7 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                     <CardContent className="space-y-4">
                         <div className="space-y-3 md:hidden">
                             {events.length === 0 && <div className="text-sm text-muted-foreground">No events recorded yet.</div>}
-                            {events.map((evt) => (
+                            {events.sort((a, b) => (new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())).map((evt) => (
                                 <div key={evt.id} className="rounded-lg border bg-card p-3 shadow-sm">
                                     <div className="flex items-center justify-between">
                                         <Badge variant="outline" className={getStatusColor(evt.status)}>
@@ -306,10 +306,9 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-4">
                     <Link href={`/packages/${pkg.id}/edit`}>
-                        <Button variant="outline">Edit Package</Button>
+                        <Button variant="outline" disabled>Edit Package</Button>
                     </Link>
-                    <Button variant="outline">{pkg.notificationsEnabled ? 'Disable' : 'Enable'} Notifications</Button>
-                    <Button variant="outline">View Tracking History</Button>
+                    <Button variant="outline" disabled>{pkg.notificationsEnabled ? 'Disable' : 'Enable'} Notifications</Button>
                 </div>
             </div>
         </AppLayout>
