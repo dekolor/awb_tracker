@@ -1,33 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import {
-  Package as PackageIcon,
-  Truck,
-  CheckCircle2,
-  MapPin,
-  Clock,
-  Copy,
-  Check,
-  ChevronRight,
-  Search as SearchIcon,
-} from 'lucide-react';
+import { Package as PackageIcon, Truck, CheckCircle2, MapPin, Clock, Copy, Check, ChevronRight, Search as SearchIcon, RefreshCw } from 'lucide-react';
 import { PackageEvent } from './packages/show';
 import { DateTime } from 'luxon';
 
-const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Dashboard', href: '/dashboard' },
-];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 
 interface DashboardProps {
   packages: {
@@ -76,293 +60,213 @@ function statusMeta(statusRaw: string) {
 }
 
 export default function Dashboard({ packages }: DashboardProps) {
-  // Derived counts
-  const total = packages.length;
-  const deliveredCount = packages.filter((p) => /deliver/i.test(p.status)).length;
-  const inTransitCount = packages.filter((p) => /(transit|shipped|out)/i.test(p.status)).length;
+    const total = packages.length;
+    const deliveredCount = packages.filter((p) => /deliver/i.test(p.status)).length;
+    const inTransitCount = packages.filter((p) => /(transit|shipped|out)/i.test(p.status)).length;
 
-  // Local state: search & filter
-  const [query, setQuery] = useState('');
-  const [filter, setFilter] =
-    useState<'all' | 'pending' | 'in-transit' | 'delivered'>('all');
+    const [query, setQuery] = useState('');
 
-  const findOrigin = (events: PackageEvent[] = []): string => {
-    return [...(events || [])].reverse().find((event) => event?.location != null)?.location || '';
-  }
+    const recentSorted = useMemo(
+        () => [...packages].sort((a, b) => (new Date(b.lastUpdated).getTime() || 0) - (new Date(a.lastUpdated).getTime() || 0)),
+        [packages]
+    );
 
-  const findDestination = (events: PackageEvent[] = []): string => {
-    return (events || []).find((event) => event?.location != null)?.location || '';
-  };
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) return recentSorted;
+        return recentSorted.filter(
+            (p) =>
+                p.name.toLowerCase().includes(q) ||
+                p.trackingNumber?.toLowerCase().includes(q) ||
+                p.origin?.toLowerCase().includes(q) ||
+                p.destination?.toLowerCase().includes(q)
+        );
+    }, [recentSorted, query]);
 
-  const recentSorted = useMemo(
-    () =>
-      [...packages].sort(
-        (a, b) =>
-          (new Date(b.lastUpdated).getTime() || 0) -
-          (new Date(a.lastUpdated).getTime() || 0)
-      ),
-    [packages]
-  );
+    const lastEventOf = (events: PackageEvent[] = []) => (events && events.length ? events[events.length - 1] : undefined);
+    const findOrigin = (events: PackageEvent[] = []) => [...(events || [])].reverse().find((e) => e?.location != null)?.location || '';
+    const findDestination = (events: PackageEvent[] = []) => (events || []).find((e) => e?.location != null)?.location || '';
+    const formatDate = (date?: string) => {
+        if (!date) return 'N/A';
+        const dt = DateTime.fromISO(date);
+        return dt.isValid ? dt.toLocaleString(DateTime.DATETIME_MED) : date;
+    };
 
-  const filtered = useMemo(() => {
-    return recentSorted.filter((p) => {
-      const meta = statusMeta(p.status);
-      const matchesFilter = filter === 'all' ? true : meta.key === filter;
-      const q = query.trim().toLowerCase();
-      const matchesQuery =
-        q.length === 0 ||
-        p.name.toLowerCase().includes(q) ||
-        p.trackingNumber?.toLowerCase().includes(q) ||
-        p.origin?.toLowerCase().includes(q) ||
-        p.destination?.toLowerCase().includes(q);
-      return matchesFilter && matchesQuery;
-    });
-  }, [recentSorted, query, filter]);
+    const recentActivity = useMemo(() => {
+        return recentSorted
+            .map((p) => ({ pkg: p, evt: lastEventOf(p.events) }))
+            .filter((x) => x.evt)
+            .slice(0, 8);
+    }, [recentSorted]);
 
-  // Copy state (simple visual feedback)
-  const [copiedId, setCopiedId] = useState<number | null>(null);
-  const handleCopy = async (text: string, id: number) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 1200);
-    } catch {
-      // ignore
-    }
-  };
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Dashboard" />
+            <div className="flex h-full flex-1 flex-col gap-8 overflow-x-hidden p-4 md:p-8">
 
-  const formatDate = (date?: string): string => {
-    if (!date) return 'N/A';
-    const dt = DateTime.fromISO(date);
-    return dt.isValid ? dt.toLocaleString(DateTime.DATETIME_MED) : date;
-  }
+                {/* Overview */}
+                {/* Mobile summary line */}
+                <div className="md:hidden text-sm text-muted-foreground">
+                    {total} total, {inTransitCount} in transit, {deliveredCount} delivered
+                </div>
 
-  const totalLabel =
-    total === 0 ? 'No packages yet' : `${filtered.length} of ${total} shown`;
+                <div className="hidden gap-4 md:grid md:grid-cols-3">
+                    <OverviewTile title="Total" value={total} icon={PackageIcon} gradient="from-violet-500/30" />
+                    <OverviewTile title="In transit" value={inTransitCount} icon={Truck} gradient="from-sky-500/30" />
+                    <OverviewTile title="Delivered" value={deliveredCount} icon={CheckCircle2} gradient="from-emerald-500/30" />
+                </div>
 
-  return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Dashboard" />
-      <div className="flex h-full flex-1 flex-col gap-6 overflow-x-hidden p-4 md:p-6">
-        {/* Page header */}
-        <div className="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">
-              Track your packages and recent activity at a glance.
-            </p>
-          </div>
-        </div>
+                {/* Main content */}
+                <div className="grid gap-6 lg:grid-cols-3">
+                    {/* Packages grid */}
+                    <Card className="col-span-2">
+                        <CardHeader className="flex items-center justify-between gap-3 sm:flex-row">
+                            <CardTitle className="text-lg font-semibold">Your Packages</CardTitle>
+                            <div className="flex w-full items-center gap-2 sm:w-auto">
+                                <div className="relative w-full sm:w-72">
+                                    <SearchIcon className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input className="pl-8" placeholder="Search packages" value={query} onChange={(e) => setQuery(e.target.value)} />
+                                </div>
+                                <div className="hidden items-center gap-2 sm:flex">
+                                    <Button asChild size="sm" className="shadow-md">
+                                        <Link href="/packages/create">Add</Link>
+                                    </Button>
+                                    <Button variant="outline" size="icon" onClick={() => router.reload({ only: ['packages'] })} aria-label="Refresh">
+                                        <RefreshCw className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            {filtered.length === 0 ? (
+                                <EmptyState />
+                            ) : (
+                                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                    {filtered.slice(0, 9).map((p) => {
+                                        const meta = statusMeta(p.status);
+                                        const evt = lastEventOf(p.events);
+                                        return (
+                                            <div key={p.id} className="relative overflow-hidden rounded-xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent">
+                                                <div
+                                                    role="button"
+                                                    onClick={() => router.visit(`/packages/${p.id}`)}
+                                                    className="group rounded-xl border border-white/10 bg-card/70 p-4 supports-[backdrop-filter]:backdrop-blur transition-transform hover:scale-[1.01]"
+                                                >
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <h3 className="truncate text-base font-medium">{p.name}</h3>
+                                                        <Badge variant="secondary" className={meta.className}>
+                                                            {meta.label}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                                                        <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" />{findOrigin(p.events)} → {findDestination(p.events)}</span>
+                                                        {evt?.statusDate && (
+                                                            <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" />{formatDate(evt.statusDate)}</span>
+                                                        )}
+                                                    </div>
+                                                    {p.trackingNumber && (
+                                                        <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                                                            <span className="font-mono">{p.trackingNumber}</span>
+                                                            <CopyButton text={p.trackingNumber} />
+                                                        </div>
+                                                    )}
+                                                    <ChevronRight className="absolute right-3 top-3 h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
 
-        {/* Stats */}
-        <div className="hidden lg:grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <StatCard
-            title="Total Packages"
-            value={`${total}`}
-            icon={PackageIcon}
-            gradient="from-violet-500/10 via-background to-background"
-            href="/packages"
-          />
-          <StatCard
-            title="Packages In-transit"
-            value={`${inTransitCount}`}
-            icon={Truck}
-            gradient="from-sky-500/10 via-background to-background"
-            href="/packages?status=in-transit"
-          />
-          <StatCard
-            title="Delivered Packages"
-            value={`${deliveredCount}`}
-            icon={CheckCircle2}
-            gradient="from-emerald-500/10 via-background to-background"
-            href="/packages?status=delivered"
-          />
-        </div>
-
-        {/* Recent Packages */}
-        <Card className="overflow-hidden">
-          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <CardTitle className="text-lg font-semibold">Recent Packages</CardTitle>
-              <span className="text-sm text-muted-foreground">{totalLabel}</span>
+                    {/* Recent Activity */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {recentActivity.length === 0 ? (
+                                <p className="text-sm text-muted-foreground">No recent events.</p>
+                            ) : (
+                                <ol className="relative border-l border-white/10 pl-4">
+                                    {recentActivity.map(({ pkg: p, evt }) => (
+                                        <li key={`${p.id}-${evt!.id}`} className="mb-6 ml-2">
+                                            <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 ring-2 ring-white/20" />
+                                            <div className="flex items-center justify-between gap-2">
+                                                <Link href={`/packages/${p.id}`} className="text-sm font-medium hover:underline">
+                                                    {p.name}
+                                                </Link>
+                                                <span className="text-xs text-muted-foreground">{formatDate(evt!.statusDate)}</span>
+                                            </div>
+                                            <div className="mt-1 text-sm text-muted-foreground">{evt!.longStatus || evt!.status}</div>
+                                            {evt!.location && <div className="text-xs text-muted-foreground">{evt!.location}</div>}
+                                        </li>
+                                    ))}
+                                </ol>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-
-            {/* Toolbar: search + filters */}
-            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-              <div className="relative">
-                <SearchIcon className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  className="pl-8 sm:w-[260px]"
-                  placeholder="Search name, tracking, place…"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </div>
-              <div className="flex items-center gap-1">
-                {(['all', 'pending', 'in-transit', 'delivered'] as const).map((key) => (
-                  <Button
-                    key={key}
-                    type="button"
-                    size="sm"
-                    variant={filter === key ? 'secondary' : 'ghost'}
-                    onClick={() => setFilter(key)}
-                    className="capitalize"
-                  >
-                    {key.replace('-', ' ')}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-3">
-            {filtered.length === 0 ? (
-              <EmptyState />
-            ) : (
-              filtered.slice(0, 10).map((pkg) => {
-                const meta = statusMeta(pkg.status);
-                const StatusIcon = meta.icon;
-                const href = `/packages/${pkg.id}`;
-                const lastEvent = pkg.events && pkg.events.length > 0
-                  ? pkg.events[pkg.events.length - 1]
-                  : undefined;
-
-                return (
-                  <div
-                    key={pkg.id}
-                    role="button"
-                    onClick={() => router.visit(href)}
-                    className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg border bg-card p-4 transition-all hover:bg-accent hover:text-accent-foreground w-full"
-                  >
-                    <div className="flex min-w-0 items-start gap-3 w-full">
-                      <div className="mt-1 rounded-md bg-primary/10 p-2 text-primary">
-                        <PackageIcon className="h-5 w-5" />
-                      </div>
-
-                      <div className="min-w-0 w-full">
-                        <div className="flex items-center gap-2 justify-between w-full">
-                          <h3 className="truncate text-base font-medium">{pkg.name}</h3>
-                          <Badge variant="secondary" className={meta.className}>
-                            <StatusIcon className="mr-1 h-3.5 w-3.5" />
-                            {meta.label}
-                          </Badge>
-                        </div>
-
-                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                          <span className="inline-flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {findOrigin(pkg.events)} → {findDestination(pkg.events)}
-                          </span>
-                          {lastEvent?.statusDate && (
-                            <>
-                              <span className="hidden sm:inline">•</span>
-                              <span
-                                className="inline-flex items-center gap-1"
-                                title={formatDate(lastEvent.statusDate)}
-                              >
-                                <Clock className="h-4 w-4" />
-                                Updated {formatDate(lastEvent.statusDate)}
-                              </span>
-                            </>
-                          )}
-                          {pkg.estimatedDelivery && (
-                            <>
-                              <span className="hidden sm:inline">•</span>
-                              <span title={pkg.estimatedDelivery}>
-                                ETA {pkg.estimatedDelivery}
-                              </span>
-                            </>
-                          )}
-                        </div>
-
-                        {pkg.trackingNumber && (
-                          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                            <span className="font-mono">
-                              {pkg.trackingNumber}
-                            </span>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCopy(pkg.trackingNumber, pkg.id);
-                              }}
-                              title="Copy tracking number"
-                              aria-label="Copy tracking number"
-                            >
-                              {copiedId === pkg.id ? (
-                                <Check className="h-4 w-4" />
-                              ) : (
-                                <Copy className="h-4 w-4" />
-                              )}
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />
-                  </div>
-                );
-              })
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </AppLayout>
-  );
+        </AppLayout>
+    );
 }
 
-function StatCard({
-  title,
-  value,
-  icon: Icon,
-  gradient,
-  href,
-}: {
-  title: string;
-  value: string | number;
-  icon: React.ElementType;
-  gradient?: string;
-  href?: string;
-}) {
-  return (
-    <Card className="relative overflow-hidden transition-colors hover:bg-accent/30">
-      {/* Clickable overlay for the whole card when href is provided */}
-      {href && <Link href={href} className="absolute inset-0 z-10" aria-label={title} />}
-      <div
-        className={`pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br ${gradient}`}
-      />
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-        <div className="rounded-md bg-primary/10 p-2 text-primary">
-          <Icon className="h-4 w-4" />
+function OverviewTile({ title, value, icon: Icon, gradient }: { title: string; value: number | string; icon: React.ElementType; gradient: string }) {
+    return (
+        <div className="relative overflow-hidden rounded-xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent">
+            <Card className="relative overflow-hidden">
+                <div className={cn('pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br', gradient)} />
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+                    <div className="rounded-md bg-primary/10 p-2 text-primary">
+                        <Icon className="h-4 w-4" />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-semibold">{value}</div>
+                </CardContent>
+            </Card>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-semibold">{value}</div>
-      </CardContent>
-    </Card>
-  );
+    );
 }
 
 function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center rounded-lg border p-10 text-center">
-      <div className="mb-3 rounded-full bg-muted p-3">
-        <PackageIcon className="h-6 w-6 text-muted-foreground" />
-      </div>
-      <h3 className="text-base font-medium">No packages yet</h3>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Add your first package to start tracking shipments.
-      </p>
-      <Button asChild className="mt-4">
-        <Link href="/packages/create">Add package</Link>
-      </Button>
-    </div>
-  );
+    return (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-white/10 bg-card/60 p-10 text-center supports-[backdrop-filter]:backdrop-blur">
+            <div className="mb-3 rounded-full bg-muted p-3">
+                <PackageIcon className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <h3 className="text-base font-medium">No packages yet</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Add your first package to start tracking shipments.</p>
+            <Button asChild className="mt-4">
+                <Link href="/packages/create">Add package</Link>
+            </Button>
+        </div>
+    );
+}
+
+function CopyButton({ text }: { text: string }) {
+    const [copied, setCopied] = useState(false);
+    return (
+        <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                    await navigator.clipboard.writeText(text);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1200);
+                } catch {}
+            }}
+            title="Copy tracking number"
+            aria-label="Copy tracking number"
+        >
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+        </Button>
+    );
 }
