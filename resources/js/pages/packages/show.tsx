@@ -2,11 +2,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, Info, MapPin, Package, Truck } from 'lucide-react';
+import { ArrowLeft, Bell, BellOff, Calendar, Clock, Copy, ExternalLink, MapPin, Package, Truck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface PackageEvent {
@@ -100,8 +99,8 @@ const findDestination = (events: PackageEvent[] = []): string => {
 export default function ShowPackage({ package: pkg, events, carrier }: ShowPackageProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Packages',
-            href: '/packages',
+            title: 'Dashboard',
+            href: '/dashboard',
         },
         {
             title: pkg.name,
@@ -119,109 +118,96 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Package: ${pkg.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-hidden rounded-xl p-4 md:p-8">
+                {/* Compact header */}
+                <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+                    <div className="flex items-start gap-3">
                         <Link href="/dashboard">
                             <Button variant="outline" size="sm">
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                Back to Packages
+                                <ArrowLeft className="mr-2 h-4 w-4" /> Back
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-2xl font-bold">{pkg.name}</h1>
-                            <p className="mt-1 text-sm text-muted-foreground">Package ID: #{pkg.id}</p>
+                            <h1 className="text-xl font-semibold md:text-2xl">{pkg.name}</h1>
+                            <p className="text-xs text-muted-foreground">ID #{pkg.id}</p>
                         </div>
                     </div>
-
                     <div className="flex items-center gap-2">
                         <Badge variant="outline" className={getStatusColor(pkg.status)}>
                             {pkg.status.replace('_', ' ').toUpperCase()}
                         </Badge>
                         {pkg.notificationsEnabled ? (
-                            <Badge variant="outline" className="gap-1">
-                                <Bell className="h-3 w-3" />
-                                Notifications On
-                            </Badge>
+                            <Badge variant="outline" className="gap-1"><Bell className="h-3 w-3" /> Notifications</Badge>
                         ) : (
-                            <Badge variant="outline" className="gap-1 opacity-60">
-                                <BellOff className="h-3 w-3" />
-                                Notifications Off
-                            </Badge>
+                            <Badge variant="outline" className="gap-1 opacity-60"><BellOff className="h-3 w-3" /> Notifications</Badge>
                         )}
                     </div>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                    {/* Package Information */}
-                    <Card>
+                <div className="grid gap-6 lg:grid-cols-3">
+                    {/* Details */}
+                    <Card className="lg:col-span-1 order-1 lg:order-2">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Package className="h-5 w-5" />
-                                Package Information
+                                Details
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-5">
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Description</label>
-                                <p className="mt-1">{pkg.description || 'No description provided'}</p>
-                            </div>
-
-                            <Separator />
-
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">Tracking Number</label>
+                                <div className="text-xs text-muted-foreground">Tracking</div>
                                 <div className="mt-1 flex items-center gap-2">
-                                    <code className="rounded bg-muted px-2 py-1 font-mono text-sm">{pkg.trackingNumber}</code>
-                                    <Button variant="outline" size="sm" onClick={() => copyToClipboard(pkg.trackingNumber)}>
+                                    <code className="rounded bg-muted px-2 py-1 font-mono text-sm break-all">{pkg.trackingNumber}</code>
+                                    <Button variant="outline" size="sm" onClick={() => copyToClipboard(pkg.trackingNumber)} aria-label="Copy tracking">
                                         <Copy className="h-3 w-3" />
                                     </Button>
                                 </div>
                             </div>
-
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Carrier</label>
-                                <p className="mt-1 flex items-center gap-2">
-                                    <Truck className="h-4 w-4" />
-                                    {carrier.name || `Carrier ID: ${pkg.carrierId}`}
-                                </p>
+                                <div className="text-xs text-muted-foreground">Carrier</div>
+                                <div className="mt-1 flex items-center gap-2">
+                                    <Truck className="h-4 w-4" /> {carrier.name || `Carrier ID: ${pkg.carrierId}`}
+                                    {carrier.websiteUrl && (
+                                        <a className="ml-1 inline-flex items-center gap-1 text-xs text-primary hover:underline" href={carrier.websiteUrl} target="_blank" rel="noreferrer">
+                                            Website <ExternalLink className="h-3 w-3" />
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                            {pkg.description && (
+                                <div>
+                                    <div className="text-xs text-muted-foreground">Notes</div>
+                                    <p className="mt-1 text-sm">{pkg.description}</p>
+                                </div>
+                            )}
+                            <Separator />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div className="text-xs text-muted-foreground">Origin</div>
+                                    <div className="mt-1 text-sm">{events.length > 0 ? findOrigin(events) : '—'}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-muted-foreground">Destination</div>
+                                    <div className="mt-1 text-sm">{events.length > 0 ? findDestination(events) : '—'}</div>
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="mt-2 flex flex-col gap-2">
+                                <Link href={`/packages/${pkg.id}/edit`}>
+                                    <Button variant="outline" disabled className="w-full">Edit</Button>
+                                </Link>
+                                <Button variant="outline" disabled className="w-full">
+                                    {pkg.notificationsEnabled ? 'Disable' : 'Enable'} Notifications
+                                </Button>
+                                <Button variant="outline" onClick={handleDelete} className="w-full">Delete</Button>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Shipping Information */}
-                    <Card>
+                    {/* Activity timeline */}
+                    <Card className="lg:col-span-2 order-2 lg:order-1">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <MapPin className="h-5 w-5" />
-                                Shipping Information
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">Origin</label>
-                                <p className="mt-1">{events.length > 0 ? findOrigin(events) : '—'}</p>
-                            </div>
-
-                            <div className="flex justify-center">
-                                <div className="h-8 w-px bg-border"></div>
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">Destination</label>
-                                <p className="mt-1">{events.length > 0 ? findDestination(events) : '—'}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Timeline Information */}
-                    <Card className="md:col-span-2">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Clock className="h-5 w-5" />
-                                Timeline
-                            </CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5" /> Activity</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-2">
@@ -237,8 +223,8 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                                                 <div className="text-sm font-medium">Created</div>
                                                 <div className="mt-1 text-xs text-muted-foreground">{hasEvents ? formatDate(earliest?.statusDate) : '—'}</div>
                                             </div>
-                                            <div className="rounded-lg border border-blue-200 bg-secondary p-4 text-center">
-                                                <Clock className="mx-auto mb-2 h-5 w-5 text-blue-600" />
+                                            <div className="rounded-lg bg-secondary p-4 text-center">
+                                                <Clock className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                                                 <div className="text-sm font-medium">Last Updated</div>
                                                 <div className="mt-1 text-xs text-muted-foreground">{hasEvents ? formatDate(latest?.statusDate) : '—'}</div>
                                             </div>
@@ -252,84 +238,35 @@ export default function ShowPackage({ package: pkg, events, carrier }: ShowPacka
                                     <div className="mt-1 text-xs text-muted-foreground">{formatDate(pkg.estimatedDelivery)}</div>
                                 </div> */}
                             </div>
+                            {/* Vertical timeline */}
+                            <div className="mt-6">
+                                {events.length === 0 ? (
+                                    <div className="text-sm text-muted-foreground">No events yet.</div>
+                                ) : (
+                                    <ol className="relative border-l border-white/10 pl-4">
+                                        {[...events]
+                                            .sort((a, b) => new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())
+                                            .map((evt) => (
+                                                <li key={evt.id} className="mb-6 ml-2">
+                                                    <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 ring-2 ring-white/20" />
+                                                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                                        <span className="text-xs text-muted-foreground">{formatDate(evt.statusDate)}</span>
+                                                        <Badge variant="outline" className={getStatusColor(evt.status)}>
+                                                            {evt.status.replace('_', ' ').toUpperCase()}
+                                                        </Badge>
+                                                        <span className="text-xs text-muted-foreground">{evt.location || '—'}</span>
+                                                    </div>
+                                    <div className="mt-1 text-sm break-words">{evt.longStatus || 'No description'}</div>
+                                                </li>
+                                            ))}
+                                    </ol>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/*  Event History */}
-                <Card className="md:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Info className="h-5 w-5" />
-                            Event History
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-3 md:hidden">
-                            {events.length === 0 && <div className="text-sm text-muted-foreground">No events recorded yet.</div>}
-                            {[...events].sort((a, b) => (new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())).map((evt) => (
-                                <div key={evt.id} className="rounded-lg border bg-card p-3 shadow-sm">
-                                    <div className="flex items-center justify-between">
-                                        <Badge variant="outline" className={getStatusColor(evt.status)}>
-                                            {evt.status.replace('_', ' ').toUpperCase()}
-                                        </Badge>
-                                        <span className="text-xs text-muted-foreground">{formatDate(evt.created_at)}</span>
-                                    </div>
-                                    <div className="mt-2 text-sm">{evt.longStatus || 'No description'}</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{evt.location || '—'}</div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="hidden w-full overflow-x-auto md:block">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[160px]">Date & Time</TableHead>
-                                        <TableHead className="w-[160px]">Status</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead className="w-[220px]">Location</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {events.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={4} className="text-center text-sm text-muted-foreground">
-                                                No events recorded yet.
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        events.map((evt) => (
-                                            <TableRow key={evt.id}>
-                                                <TableCell className="whitespace-nowrap">{formatDate(evt.statusDate)}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline" className={getStatusColor(evt.status)}>
-                                                        {evt.status.replace('_', ' ').toUpperCase()}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="max-w-[520px]">
-                                                    <div className="truncate" title={evt.status}>
-                                                        {evt.longStatus || 'No description'}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="whitespace-nowrap">{evt.location || '—'}</TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Action Buttons */}
-                <div className="flex gap-2 pt-4">
-                    <Link href={`/packages/${pkg.id}/edit`}>
-                        <Button variant="outline" disabled>Edit Package</Button>
-                    </Link>
-                    <Button variant="outline" disabled>{pkg.notificationsEnabled ? 'Disable' : 'Enable'} Notifications</Button>
-                    <Button variant="outline" onClick={handleDelete}>Delete Package</Button>
-                </div>
+                
             </div>
         </AppLayout>
     );
